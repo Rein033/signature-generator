@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amersfoort voor Vrijheid – Signature Generator</title>
+
+<style>
+body{
+font-family:Arial, Helvetica, sans-serif;
+background:#f2f4f7;
+margin:0;
+}
+
+header{
+background:#111827;
+color:white;
+padding:20px 30px;
+font-size:22px;
+font-weight:700;
+}
+
+.container{
+display:grid;
+grid-template-columns:420px 1fr;
+gap:30px;
+padding:30px;
+}
+
+.card{
+background:white;
+padding:22px;
+border-radius:12px;
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
+}
+
+label{
+font-size:13px;
+font-weight:600;
+margin-top:12px;
+display:block;
+}
+
+input{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #d4d7dd;
+margin-top:5px;
+}
+
+button{
+margin-top:16px;
+padding:13px;
+border:0;
+background:#111827;
+color:white;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+width:100%;
+}
+
+button:hover{
+background:black;
+}
+
+.preview{
+background:#1c1c1c;
+padding:25px;
+border-radius:10px;
+min-height:200px;
+}
+</style>
+</head>
+
+<body>
+
+<header>Amersfoort voor Vrijheid – Email Signature Generator</header>
+
+<div class="container">
+
+<div class="card">
+<h3>Gegevens</h3>
+
+<label>Naam</label>
+<input id="naam" placeholder="Voornaam Achternaam">
+
+<label>Functie</label>
+<input id="functie" placeholder="Raadslid / Bestuur / Vrijwilliger">
+
+<label>Mobiel</label>
+<input id="mob" placeholder="+31 6 ...">
+
+<label>Email</label>
+<input id="mail" placeholder="naam@email.nl">
+
+<button onclick="gen()">Genereer</button>
+<button onclick="copySig()">📋 Kopieer voor Outlook</button>
+
+</div>
+
+<div class="card">
+<h3>Preview</h3>
+<div class="preview" id="preview"></div>
+</div>
+
+</div>
+
+<script>
+
+const logoURL = "https://www.amersfoortvoorvrijheid.nl/wp-content/uploads/AmersfoortvoorVrijheid-Favicon_2022.png";
+
+function gen(){
+
+let naam = val("naam");
+let functie = val("functie");
+let mob = val("mob");
+let mail = val("mail");
+
+let html = `
+<table cellpadding="0" cellspacing="0" border="0"
+style="font-family:Arial, Helvetica, sans-serif; font-size:14px; color:#e6e6e6; background:#1c1c1c; padding:20px;">
+<tr>
+
+<td style="vertical-align:top; padding-right:25px;">
+
+<div style="font-size:13px;color:#bfbfbf;margin-bottom:12px;">
+Met vriendelijke groet,
+</div>
+
+<div style="font-size:20px;font-weight:bold;color:#ffffff;">
+${naam}
+</div>
+
+<div style="font-size:15px;color:#c9c9c9;margin-bottom:16px;">
+${functie}
+</div>
+
+<div style="line-height:1.6;">
+${mob ? `Mobiel: <span style="color:#4da3ff">${mob}</span><br>` : ""}
+${mail ? `Email: <span style="color:#4da3ff">${mail}</span>` : ""}
+</div>
+
+</td>
+
+<td style="width:1px;background:#555;"></td>
+
+<td style="vertical-align:top;padding-left:25px;">
+
+<img src="${logoURL}" width="120"><br><br>
+
+<div style="font-weight:bold;color:#ffffff;">
+Amersfoort voor Vrijheid
+</div>
+
+<br>
+
+<a href="https://www.amersfoortvoorvrijheid.nl" 
+style="color:#4da3ff;text-decoration:none;">
+www.amersfoortvoorvrijheid.nl
+</a>
+
+</td>
+</tr>
+</table>
+`;
+
+document.getElementById("preview").innerHTML = html;
+window.signatureHTML = html;
+}
+
+function val(id){
+return document.getElementById(id).value;
+}
+
+async function copySig(){
+
+if(!window.signatureHTML){
+alert("Genereer eerst een handtekening.");
+return;
+}
+
+let html = window.signatureHTML;
+let plain = html.replace(/<[^>]*>/g,'');
+
+const blobHTML = new Blob([html],{type:'text/html'});
+const blobText = new Blob([plain],{type:'text/plain'});
+
+const data = [new ClipboardItem({
+'text/html': blobHTML,
+'text/plain': blobText
+})];
+
+await navigator.clipboard.write(data);
+
+alert("Gekopieerd! Ga naar Outlook → Instellingen → Handtekeningen → Plak");
+}
+
+</script>
+
+</body>
+</html>
