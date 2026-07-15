@@ -1,0 +1,9 @@
+{
+  "adb_path": "adb",
+  "ideviceinfo_path": "ideviceinfo",
+  "idevice_id_path": "idevice_id",
+  "default_printer": "DYMO LabelWriter 450",
+  "label_value": "imei",
+  "include_barcode": true,
+  "header_text": "IMEI"
+}
